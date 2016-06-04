@@ -9,8 +9,8 @@ easier:
 
 ## Notes
 
-- The `mysql` compose file uses a named volume, instead of mounting a directory
-  on the host. This is due to a
+- The `mysql` container stores it's data in a named volume instead in a directed
+  mounted from the host. This is due to a
   [bug](https://forums.docker.com/t/posix-fallocate-issues/11370) in the OS X
   Beta version of Docker. Once the bug is resolved, I'll be mounting a host
-  directory instead.
+  directory instead for easy access to the MySQL data files.
