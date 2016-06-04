@@ -1,0 +1,16 @@
+version: "2"
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    network_mode: bridge
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+volumes:
+  data:
+    driver: local
