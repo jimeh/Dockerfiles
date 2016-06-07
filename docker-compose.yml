@@ -1,0 +1,39 @@
+version: "2"
+services:
+  redis:
+    container_name: redis
+    build: ./redis/
+    restart: always
+    network_mode: bridge
+    volumes:
+      - redis_data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    network_mode: bridge
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+  elasticsearch:
+    container_name: elasticsearch
+    build: ./elasticsearch/
+    restart: always
+    network_mode: bridge
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "127.0.0.1:9200:9200"
+      - "127.0.0.1:9300:9300"
+volumes:
+  redis_data:
+    driver: local
+  mysql_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
