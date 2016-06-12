@@ -1,7 +1,7 @@
 version: "2"
 services:
   redis:
-    build: .
+    image: jimeh/redis-for-development
     container_name: redis
     restart: always
     network_mode: bridge
