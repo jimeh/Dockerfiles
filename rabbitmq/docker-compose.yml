@@ -1,0 +1,14 @@
+version: "2"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    network_mode: bridge
+    ports:
+      - "127.0.0.1:4369:4369"
+      - "127.0.0.1:5671:5671"
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:25672:25672"
+      - "127.0.0.1:15671:15671"
+      - "127.0.0.1:15672:15672"

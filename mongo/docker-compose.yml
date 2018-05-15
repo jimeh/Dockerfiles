@@ -1,0 +1,14 @@
+version: "2"
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    network_mode: bridge
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - data:/data/db
+volumes:
+  data:
+    driver: local
