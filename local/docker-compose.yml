@@ -1,0 +1,70 @@
+---
+version: "3.8"
+volumes:
+  jaeger-data:
+    driver: local
+  mariadb-data:
+    driver: local
+  redis-data:
+    driver: local
+
+services:
+  utils:
+    profiles: [utils]
+    image: alpine:latest
+    restart: never
+    entrypoint: /entrypoint.sh
+    volumes:
+      - "./utils-entrypoint.sh:/entrypoint.sh"
+      - "jaeger-data:/data/jaeger"
+      - "mariadb-data:/data/mariadb"
+      - "redis-data:/data/redis"
+      - "${BACKUPS_DIR:-./backups}:/backups"
+
+  mariadb:
+    image: mariadb:10.10
+    container_name: mariadb
+    restart: unless-stopped
+    network_mode: bridge
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:3306:3306"
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: unless-stopped
+    network_mode: bridge
+    command:
+      - "redis-server"
+      - "--save"
+      - "60"
+      - "1"
+      - "--loglevel warning"
+    volumes:
+      - redis-data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+      SPAN_STORAGE_TYPE: "badger"
+      BADGER_EPHEMERAL: "false"
+      BADGER_DIRECTORY_VALUE: "/badger/data"
+      BADGER_DIRECTORY_KEY: "/badger/key"
+    volumes:
+      - jaeger-data:/badger
+    ports:
+      - "127.0.0.1:5775:5775/udp"
+      - "127.0.0.1:6831:6831/udp"
+      - "127.0.0.1:6832:6832/udp"
+      - "127.0.0.1:5778:5778"
+      - "127.0.0.1:16686:16686"
+      - "127.0.0.1:14268:14268"
+      - "127.0.0.1:14250:14250"
+      - "127.0.0.1:9411:9411"
